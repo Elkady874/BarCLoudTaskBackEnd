@@ -17,9 +17,14 @@ namespace BarCLoudTaskBackEnd.Controllers
         }
 
         [HttpGet]
+        [Route(nameof(stocks))]
+
         public async Task<IActionResult> stocks() {
             var stocks =   await _polygonService.GetStocks();
-            return Ok(stocks);
+            if (stocks.StatusCode == 200) {
+                return Ok(stocks);
+
+            } else { return BadRequest(stocks); }
         }
     }
 }

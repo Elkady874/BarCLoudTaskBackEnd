@@ -2,6 +2,6 @@
 {
     public interface IPolygonService
     {
-        public Task<IList<PolygonTicker>> GetStocks();
+        public Task<PolygonRespone> GetStocks();
     }
 }
