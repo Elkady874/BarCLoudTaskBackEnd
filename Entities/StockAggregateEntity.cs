@@ -37,7 +37,7 @@ namespace BarCLoudTaskBackEnd.Entities
         public decimal TradingVolume  { get; set; }
 
         [Required]
-        public DateTime CreatedOn { get; set; } 
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
         public virtual StockEntity Stock { get; set; }
 
 

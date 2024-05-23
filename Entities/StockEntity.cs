@@ -19,10 +19,10 @@ namespace BarCLoudTaskBackEnd.Entities
         [Required]
         public string Name { get; set; }
       
-
         [Required]
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public virtual ICollection<StockAggregateEntity>  StockAggregate { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<BarCloudUserEntity>  SubscribedUsers { get; set; }
 
     }

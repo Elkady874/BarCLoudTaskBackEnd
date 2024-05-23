@@ -25,6 +25,7 @@ namespace BarCLoudTaskBackEnd.Entities
 
         [Required]
         public DateTime CreatedOn { get; set; } = DateTime.Now;
+      [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<StockEntity> RegisteredStock { get; set; }
 
 
