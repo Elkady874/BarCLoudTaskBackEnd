@@ -13,6 +13,8 @@ namespace BarCLoudTaskBackEnd.Repositories
 
         Task<StockEntity> GetStockByIdAsync(int stockId);
         Task<int> InsertStockAsync(StockEntity stock);
+
+        Task<bool> InsertStockAggregateAsync(List<StockAggregateEntity> stockAggregat,string symbol);
         Task<List<StockEntity>> GetAllStocksAsync();
 
 

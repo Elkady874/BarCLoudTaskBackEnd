@@ -118,6 +118,21 @@ namespace BarCLoudTaskBackEnd.Repositories
            return await dataBaseContext.Stocks.AsNoTracking().Select(s => s).ToListAsync();
         }
 
+        public async Task<bool> InsertStockAggregateAsync(List<StockAggregateEntity> stockAggregat, string symbol)
+        {
+            using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
+            var stockEntity = await dataBaseContext.Stocks.Where(s => s.Ticker == symbol).FirstOrDefaultAsync();
+            if (stockEntity == null) {
+                return await Task.FromResult(false); 
+            }
+            stockEntity.StockAggregate = stockAggregat;
+            //             stockAggregat.ForEach(e => stockEntity.StockAggregate.Add(e));
+
+            await dataBaseContext.SaveChangesAsync();
+
+            return true;
+        }
+
 
     }
 }

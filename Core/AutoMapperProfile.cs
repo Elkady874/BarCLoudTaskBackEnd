@@ -21,6 +21,10 @@ namespace BarCLoudTaskBackEnd.Core
             //.ConstructUsing(ct => Mapper.Map<ICollection<BarCloudUserEntity>, List<UserDTO>>(ct.SubscribedUsers))
             //.ForAllMembers(opt => opt.Ignore());
 
+            CreateMap<StockAggregateEntity, NewStockAggregateDTO>()
+      //.ForMember(dest => dest.RegisteredStock, opt => opt.MapFrom((src, dest, srcMember, context) => srcMember))
+      .ReverseMap();
+
             CreateMap<StockEntity, StockDTO>()
                     .ForMember(dest => dest.SubscribedUsers, opt => opt.MapFrom((src, dest, srcMember, context) =>srcMember))
             .ReverseMap();

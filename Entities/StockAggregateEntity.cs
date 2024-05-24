@@ -31,13 +31,17 @@ namespace BarCLoudTaskBackEnd.Entities
         public decimal OpenPrice { get; set; }
         public bool otc { get; set; }
         [Required]
-        public int StartOfTheAggregateWindow { get; set; }
+                 [Precision(20, 2)]
+
+        public decimal StartOfTheAggregateWindow { get; set; }
         [Required]
         [Precision(10, 2)]
         public decimal TradingVolume  { get; set; }
 
         [Required]
         public DateTime CreatedOn { get; set; } = DateTime.Now;
+        [System.Text.Json.Serialization.JsonIgnore]
+
         public virtual StockEntity Stock { get; set; }
 
 

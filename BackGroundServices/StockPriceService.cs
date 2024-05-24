@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BarCLoudTaskBackEnd.DTOs.Stock;
 using BarCLoudTaskBackEnd.Services;
 
 namespace BarCLoudTaskBackEnd.BackGroundServices
@@ -7,13 +8,16 @@ namespace BarCLoudTaskBackEnd.BackGroundServices
     {
         private readonly UserService _userService;
         private readonly IPolygonService _polygonService;
-        private readonly IMapper _mapper;
-        public StockPriceService(IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceFactory, IMapper mapper)
+        private readonly StockService _stockService;
+        public StockPriceService(IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceFactory)
         {
-            _mapper = mapper;
- 
+  
 
             using IServiceScope scope = serviceScopeFactory.CreateScope();
+
+            _stockService = scope
+                .ServiceProvider
+                .GetRequiredService<StockService>();
 
             _userService = scope
                 .ServiceProvider
@@ -41,8 +45,22 @@ namespace BarCLoudTaskBackEnd.BackGroundServices
                             var fromTime = "1716339634000";//DateTimeOffset.Now.AddHours(-6).ToUnixTimeMilliseconds().ToString();
                             var toTime = "1716361234000";// DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
                             var polygonStockResponse = await _polygonService.GetStockAggregate(stock.Ticker, fromTime, toTime);
+                          
                             if (polygonStockResponse.StatusCode == 200)
                             {
+                                var stockAggregate = polygonStockResponse.results.Select(e => new NewStockAggregateDTO
+                                {
+                                    ClosePrice = e.c,
+                                    HighestPrice = e.h,
+                                    LowestPrice = e.l,
+                                    NumberOfTransactions = e.n,
+                                    OpenPrice = e.o,
+                                    otc = false,
+                                    StartOfTheAggregateWindow = e.t,
+                                    TradingVolume = e.v
+
+                                }).ToList();
+                                await _stockService.InsertStockAggregate(stockAggregate,stock.Ticker);
 
                                 var x = 1;
                             }
