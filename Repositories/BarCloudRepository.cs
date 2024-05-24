@@ -1,6 +1,7 @@
 ﻿using BarCLoudTaskBackEnd.DataAccess;
 using BarCLoudTaskBackEnd.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BarCLoudTaskBackEnd.Repositories
 {
@@ -17,12 +18,17 @@ namespace BarCLoudTaskBackEnd.Repositories
         public async Task<List<BarCloudUserEntity>> GetAllUsersAsync()
         {
             using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
-           return await dataBaseContext.Users.AsNoTracking().Select(u => u).ToListAsync();
+            var stockEntities= await dataBaseContext.Users.Include(e=>e.RegisteredStock).ToListAsync();
+            return await dataBaseContext.Users.AsNoTracking().Include(e => e.RegisteredStock).AsNoTracking().ToListAsync();
          }
 
         public async Task<int> InsertUserAsync(BarCloudUserEntity user)
         {
             using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
+            var tickerList = user.RegisteredStock.ToList().Select(registeredStock => registeredStock.Ticker).ToList();
+            user.RegisteredStock = await dataBaseContext.Stocks.Where(
+                s=>tickerList.Contains(s.Ticker)
+                ).ToListAsync();
             dataBaseContext.Users.AddAsync(user);
             await dataBaseContext.SaveChangesAsync();
             return await Task.FromResult(user.Id);
@@ -32,18 +38,29 @@ namespace BarCLoudTaskBackEnd.Repositories
         {
 
             using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
-            var _user = await dataBaseContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == user.Id);
-            //if (_user != null)
-            //{
+            var _user = await dataBaseContext.Users.Include(u=>u.RegisteredStock).FirstOrDefaultAsync(u => u.Id == user.Id);
+            var _registeredStock = _user.RegisteredStock.Select(t=>t.Ticker).ToList();
+            if (_user == null) {
+                throw new ArgumentException("Entity not found");
 
-            //    _user.PhoneNumber = user.PhoneNumber;
-            //    _user.Email = user.Email;
-            //    _user.CreatedOn = user.CreatedOn;
-            //    _user.FirstName = user.FirstName;
-            //    _user.LastName = user.LastName;
-            //}
-                   dataBaseContext.Update(user);
-             await dataBaseContext.SaveChangesAsync();
+            }
+            if (user.RegisteredStock.IsNullOrEmpty())
+            {
+                _user.RegisteredStock = [];
+            }
+            else {
+                var tickerList = user.RegisteredStock.ToList().Select(registeredStock => registeredStock.Ticker).Where(ticker => !_registeredStock.Contains(ticker)).ToList();
+                if (tickerList.Any())
+                {
+                  await dataBaseContext.Stocks.Where(
+                        s => tickerList.Contains(s.Ticker)
+                        ).ForEachAsync(e => { _user.RegisteredStock.Add(e); });
+                }
+            }
+           
+
+            dataBaseContext.Update(_user);
+            await dataBaseContext.SaveChangesAsync();
             return await Task.FromResult(user.Id);
 
 

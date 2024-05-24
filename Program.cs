@@ -1,3 +1,4 @@
+using BarCLoudTaskBackEnd.BackGroundServices;
 using BarCLoudTaskBackEnd.DataAccess;
 using BarCLoudTaskBackEnd.Repositories;
 using BarCLoudTaskBackEnd.Services;
@@ -26,6 +27,7 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<IPolygonService, PolygonService>();
+builder.Services.AddSingleton<IHostedService, AvailableStocksService>();
 
 
 var db = builder.Services.BuildServiceProvider().GetRequiredService<DataBaseContext>();

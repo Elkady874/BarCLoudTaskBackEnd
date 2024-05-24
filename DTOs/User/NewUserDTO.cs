@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BarCLoudTaskBackEnd.DTOs.Stock;
+using System.ComponentModel.DataAnnotations;
 
 namespace BarCLoudTaskBackEnd.DTOs.User
 {
@@ -10,6 +11,9 @@ namespace BarCLoudTaskBackEnd.DTOs.User
         public string PhoneNumber { get; set; }
         [EmailAddress]
         public string Email { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+
+        public List<StockDTO> RegisteredStock { get; set; }
 
     }
 }

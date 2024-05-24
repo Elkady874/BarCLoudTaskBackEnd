@@ -1,4 +1,5 @@
-﻿using BarCLoudTaskBackEnd.Entities;
+﻿using BarCLoudTaskBackEnd.DTOs.Stock;
+using BarCLoudTaskBackEnd.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace BarCLoudTaskBackEnd.DTOs.User
@@ -14,6 +15,9 @@ namespace BarCLoudTaskBackEnd.DTOs.User
         public string Email { get; set; }
 
         public DateTime CreatedOn { get; set; }
+
+        public   List<StockDTO> RegisteredStock { get; set; }
+
 
     }
 }

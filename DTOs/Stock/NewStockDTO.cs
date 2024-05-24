@@ -9,7 +9,9 @@ namespace BarCLoudTaskBackEnd.DTOs.Stock
 
 
         public string Name { get; set; }
+        public List<UserDTO> SubscribedUsers { get; set; }
 
- 
-     }
+
+
+    }
 }

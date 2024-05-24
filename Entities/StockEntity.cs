@@ -15,12 +15,13 @@ namespace BarCLoudTaskBackEnd.Entities
         [MaxLength(10)]
         public string Ticker { get; set; }
 
-        [MaxLength(50)]
+        [MaxLength(250)]
         [Required]
         public string Name { get; set; }
       
         [Required]
         public DateTime CreatedOn { get; set; } = DateTime.Now;
+        [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<StockAggregateEntity>  StockAggregate { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<BarCloudUserEntity>  SubscribedUsers { get; set; }

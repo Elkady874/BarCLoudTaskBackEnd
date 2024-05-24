@@ -22,6 +22,16 @@ namespace BarCLoudTaskBackEnd.Services
             var stockEntity = _mapper.Map<NewStockDTO, StockEntity>(stock);
             return await _stockRepository.InsertStockAsync(stockEntity);
 
+
+        }
+        public async Task<List<StockDTO>> GetAllStocks()
+        {
+            var stockEntities = await _stockRepository.GetAllStocksAsync();
+//            CreateMap<StockEntity, StockDTO>()
+//.ConstructUsing(ct => Mapper.Map<ICollection<BarCloudUserEntity>, List<UserDTO>>(ct.SubscribedUsers))
+//.ForAllMembers(opt => opt.Ignore());
+            return   _mapper.Map<List<StockEntity>, List<StockDTO>>(stockEntities);
+
         }
     }
 }
