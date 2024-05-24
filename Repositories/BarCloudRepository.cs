@@ -68,11 +68,39 @@ namespace BarCLoudTaskBackEnd.Repositories
  
         }
 
-        public async Task<BarCloudUserEntity> GetUserByIdAsync(int userId)
+        public async Task<BarCloudUserEntity?> GetUserByIdAsync(int userId)
         {
             using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
             return await dataBaseContext.Users.AsNoTracking()
                  .FirstOrDefaultAsync(u => u.Id == userId);
         }
+
+
+
+
+
+
+
+        public async Task<StockEntity?> GetStockByIdAsync(int stockId)
+        {
+            using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
+            return await dataBaseContext.Stocks.AsNoTracking()
+                 .FirstOrDefaultAsync(s => s.Id == stockId);
+        }
+        public async Task<int> InsertStockAsync(StockEntity stock)
+        {
+            using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
+            dataBaseContext.Stocks.AddAsync(stock);
+            await dataBaseContext.SaveChangesAsync();
+            return await Task.FromResult(stock.Id);
+        }
+
+         public async Task<List<StockEntity>> GetAllStocksAsync()
+        {
+            using DataBaseContext dataBaseContext = _context.CreateDataBaseContext();
+           return await dataBaseContext.Stocks.AsNoTracking().Select(s => s).ToListAsync();
+        }
+
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using BarCLoudTaskBackEnd.DTOs;
+using BarCLoudTaskBackEnd.DTOs.Stock;
+using BarCLoudTaskBackEnd.DTOs.User;
 using BarCLoudTaskBackEnd.Entities;
 
 namespace BarCLoudTaskBackEnd.Core
@@ -13,6 +14,12 @@ namespace BarCLoudTaskBackEnd.Core
 
             CreateMap<BarCloudUserEntity, NewUserDTO>()
               .ReverseMap();
+
+            CreateMap<StockEntity, StockDTO>()
+           .ReverseMap();
+
+            CreateMap<StockEntity, NewStockDTO>()
+           .ReverseMap();
         }
     }
 }

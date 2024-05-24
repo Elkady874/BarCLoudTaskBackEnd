@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using BarCLoudTaskBackEnd.DTOs.Polygon;
 
 namespace BarCLoudTaskBackEnd.Services
 {
@@ -17,36 +18,43 @@ namespace BarCLoudTaskBackEnd.Services
             _httpClient = httpClientFactory.CreateClient("Polygon");
  
         }
-        public async Task<PolygonRespone> GetStocks()
+        public async Task<PolygonTickerAggregateResponse> GetStockAggregate(string tickeSympol,string from,string to)
         {
-              using var response =  await _httpClient.GetAsync("v3/reference/tickers?active=true&limit=100");
+            var requestUrl = $"v2/aggs/ticker/{tickeSympol}/range/6/hour/{from}/{to}?adjusted=true&sort=asc";
+            using var response = await _httpClient.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
             {
                 var result = response.Content.ReadAsStringAsync().Result;
-                var rsponseobject = JsonSerializer.Deserialize<PolygonRespone>(result);
+                var rsponseobject = JsonSerializer.Deserialize<PolygonTickerAggregateResponse>(result);
                 var tickers = rsponseobject.results;
-                return new PolygonRespone(200, tickers.Where(ticker => ticker.market == "stocks").ToList());
+                return new PolygonTickerAggregateResponse(200, tickers.Select(ticker => ticker).ToList());
 
             }
-            else {
+            else
+            {
 
-                return new PolygonRespone((int)response.StatusCode, []);                   }
-
-
+                return new PolygonTickerAggregateResponse((int)response.StatusCode, []);
+            }
 
         }
-    }
-    public record PolygonTicker
-(
-string ticker,
-string name,
-string market
-);
+        public async Task<PolygonTickersRespone> GetStocks()
+        {
+              using var response =  await _httpClient.GetAsync("v3/reference/tickers?active=true&limit=1000");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                var rsponseobject = JsonSerializer.Deserialize<PolygonTickersRespone>(result);
+                var tickers = rsponseobject.results;
+                return new PolygonTickersRespone(200, tickers.Where(ticker => ticker.market == "stocks").ToList());
 
-    public record PolygonRespone
-(
-        int StatusCode,
-List<PolygonTicker> results
-);
+            }
+            else 
+            {
+
+                return new PolygonTickersRespone((int)response.StatusCode, []);    
+            }
+         }
+    }
+
 
 }

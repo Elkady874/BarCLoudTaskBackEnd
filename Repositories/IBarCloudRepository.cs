@@ -10,5 +10,15 @@ namespace BarCLoudTaskBackEnd.Repositories
         Task DeleteUsersAsync(int userId);
         Task<BarCloudUserEntity> GetUserByIdAsync(int userId);
 
+
+        Task<StockEntity> GetStockByIdAsync(int stockId);
+        Task<int> InsertStockAsync(StockEntity stock);
+        Task<List<StockEntity>> GetAllStocksAsync();
+
+
+
+
+
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BarCLoudTaskBackEnd.DataAccess;
-using BarCLoudTaskBackEnd.DTOs;
+using BarCLoudTaskBackEnd.DTOs.User;
 using BarCLoudTaskBackEnd.Entities;
 using BarCLoudTaskBackEnd.Repositories;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,10 @@
-﻿namespace BarCLoudTaskBackEnd.Services
+﻿using BarCLoudTaskBackEnd.DTOs.Polygon;
+
+namespace BarCLoudTaskBackEnd.Services
 {
     public interface IPolygonService
     {
-        public Task<PolygonRespone> GetStocks();
+         Task<PolygonTickersRespone> GetStocks();
+        Task<PolygonTickerAggregateResponse> GetStockAggregate(string tickeSympol, string from, string to);
     }
 }

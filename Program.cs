@@ -23,6 +23,7 @@ builder.Services.AddHttpClient("Polygon", configureClientHeader);
 builder.Services.AddScoped<IBarCloudRepository, BarCloudRepository>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<IPolygonService, PolygonService>();
 
