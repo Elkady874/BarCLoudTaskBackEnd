@@ -27,8 +27,8 @@ namespace BarCLoudTaskBackEnd.Controllers
         [Route(nameof(AllStocks))]
 
         public async Task<IActionResult> AllStocks() {
-            var stocks =   await _polygonService.GetStocks();
-            if (stocks.StatusCode == 200) {
+            var stocks =   await _stockService.GetAllStocks();
+            if (stocks.Any()) {
                 return Ok(stocks);
 
             } else { return BadRequest(stocks); }

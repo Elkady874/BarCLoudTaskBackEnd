@@ -2,6 +2,7 @@ using BarCLoudTaskBackEnd.BackGroundServices;
 using BarCLoudTaskBackEnd.DataAccess;
 using BarCLoudTaskBackEnd.Repositories;
 using BarCLoudTaskBackEnd.Services;
+using BarCLoudTaskBackEnd.Services.Mail;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
@@ -26,12 +27,25 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IPolygonService, PolygonService>();
 builder.Services.AddSingleton<IHostedService, AvailableStocksService>();
 builder.Services.AddSingleton<IHostedService, StockPriceService>();
 
 
 var db = builder.Services.BuildServiceProvider().GetRequiredService<DataBaseContext>();
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+
+                      });
+});
 //db.Database.EnsureCreated();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,7 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 
 app.MapControllers();

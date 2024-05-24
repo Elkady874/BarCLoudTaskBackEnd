@@ -22,6 +22,7 @@ namespace BarCLoudTaskBackEnd.DTOs.Stock
         public decimal StartOfTheAggregateWindow { get; set; }
     
         public decimal TradingVolume { get; set; }
+        public string? Name { get; set; }
 
-     }
+}
 }

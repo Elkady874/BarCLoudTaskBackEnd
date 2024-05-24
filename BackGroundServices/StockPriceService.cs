@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BarCLoudTaskBackEnd.DTOs.Stock;
 using BarCLoudTaskBackEnd.Services;
+using BarCLoudTaskBackEnd.Services.Mail;
 
 namespace BarCLoudTaskBackEnd.BackGroundServices
 {
@@ -9,6 +10,7 @@ namespace BarCLoudTaskBackEnd.BackGroundServices
         private readonly UserService _userService;
         private readonly IPolygonService _polygonService;
         private readonly StockService _stockService;
+        private readonly IEmailSender _emailSender;
         public StockPriceService(IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceFactory)
         {
   
@@ -22,6 +24,11 @@ namespace BarCLoudTaskBackEnd.BackGroundServices
             _userService = scope
                 .ServiceProvider
                 .GetRequiredService<UserService>();
+
+
+            _emailSender = scope
+                .ServiceProvider
+                .GetRequiredService<IEmailSender>();
 
             _polygonService = serviceFactory
                 .GetRequiredService<IPolygonService>();
@@ -42,8 +49,8 @@ namespace BarCLoudTaskBackEnd.BackGroundServices
                     {
                         foreach (var stock in user.RegisteredStock)
                         {
-                            var fromTime = "1716339634000";//DateTimeOffset.Now.AddHours(-6).ToUnixTimeMilliseconds().ToString();
-                            var toTime = "1716361234000";// DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+                            var fromTime =DateTimeOffset.Now.AddHours(-6).ToUnixTimeMilliseconds().ToString();// "1716339634000";
+                            var toTime =  DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();//"1716361234000";//
                             var polygonStockResponse = await _polygonService.GetStockAggregate(stock.Ticker, fromTime, toTime);
                           
                             if (polygonStockResponse.StatusCode == 200)
@@ -57,13 +64,12 @@ namespace BarCLoudTaskBackEnd.BackGroundServices
                                     OpenPrice = e.o,
                                     otc = false,
                                     StartOfTheAggregateWindow = e.t,
-                                    TradingVolume = e.v
-
+                                    TradingVolume = e.v,
+                                    Name=stock.Name
                                 }).ToList();
                                 await _stockService.InsertStockAggregate(stockAggregate,stock.Ticker);
-
-                                var x = 1;
-                            }
+                                _emailSender.SendEmail(user.Email, stockAggregate);
+                             }
 
 
                         }
