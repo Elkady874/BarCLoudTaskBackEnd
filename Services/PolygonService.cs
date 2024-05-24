@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using BarCLoudTaskBackEnd.DTOs.Polygon;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BarCLoudTaskBackEnd.Services
 {
@@ -27,6 +28,9 @@ namespace BarCLoudTaskBackEnd.Services
                 var result = response.Content.ReadAsStringAsync().Result;
                 var rsponseobject = JsonSerializer.Deserialize<PolygonTickerAggregateResponse>(result);
                 var tickers = rsponseobject.results;
+                if (tickers.IsNullOrEmpty())
+                    return new PolygonTickerAggregateResponse(400, []);
+
                 return new PolygonTickerAggregateResponse(200, tickers.Select(ticker => ticker).ToList());
 
             }

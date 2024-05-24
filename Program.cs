@@ -28,6 +28,7 @@ builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<IPolygonService, PolygonService>();
 builder.Services.AddSingleton<IHostedService, AvailableStocksService>();
+builder.Services.AddSingleton<IHostedService, StockPriceService>();
 
 
 var db = builder.Services.BuildServiceProvider().GetRequiredService<DataBaseContext>();
